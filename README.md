@@ -25,10 +25,10 @@ Deploy static files to BunnyCDN Storage Zones
     dotnet new nugetconfig
 
 - Add these lines to it:
-
+```
     <add key="dotnet-experimental" value="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-experimental/nuget/v3/index.json" />
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-
+```
 - Run this:
 
     dotnet add package Microsoft.DotNet.ILCompiler -v 7.0.0-*
