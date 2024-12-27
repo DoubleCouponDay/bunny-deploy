@@ -35,17 +35,23 @@ public class CdnDeploy {
             CommandParams.AccessKey
         );
 
+        var pullZoneId = new Option<string>(
+            CommandParams.PullZoneId,
+            CommandParams.PullZoneId
+        );
+
         //default command
         var rootcommand = new RootCommand();
         rootcommand.AddGlobalOption(storagezone);
         rootcommand.AddGlobalOption(storagekey);
         rootcommand.AddGlobalOption(accesskey);
+        rootcommand.AddGlobalOption(pullZoneId);
 
         //purge command
         var purgecommand = new Command(CommandNames.Purge, CommandHelp.Purge);
         rootcommand.AddCommand(purgecommand);
 
-        purgecommand.SetHandler(PurgeCDNAsync, accesskey, storagezone);
+        purgecommand.SetHandler(PurgeCDNAsync, accesskey, pullZoneId);
 
         //deploy command
         var deploycommand = new Command(CommandNames.Deploy, CommandHelp.Deploy);
@@ -67,11 +73,11 @@ public class CdnDeploy {
     }
 
     private static BunnyCDNStorage GetContext(string storagezone, string accesskey) {
-        var context = new BunnyCDNStorage(storagezone.ToString(), accesskey.ToString(), string.Empty);
+        var context = new BunnyCDNStorage(storagezone, accesskey, string.Empty);
         return context;
     }
 
-    private static async Task PurgeCDNAsync(string accesskey, string storageZone) {
+    private static async Task PurgeCDNAsync(string accesskey, string zoneId) {
         using var http = new HttpClient();
 
         {
@@ -88,7 +94,7 @@ public class CdnDeploy {
 
             if(response.StatusCode == HttpStatusCode.OK) {
                 Console.WriteLine("200 OK");
-                Console.WriteLine("CDN purged.");
+                Console.WriteLine("URL purged.");
             }
 
             else {
@@ -97,27 +103,27 @@ public class CdnDeploy {
         }
 
         {
-            Console.WriteLine($"Purging Storage Zone '{storageZone}'...");
-            var message = new HttpRequestMessage(HttpMethod.Post, $"https://api.bunny.net/pullzone/{storageZone}/purgeCache")
+            Console.WriteLine($"Purging Pull Zone '{zoneId}'...");
+            var message = new HttpRequestMessage(HttpMethod.Post, $"https://api.bunny.net/pullzone/{zoneId}/purgeCache")
             {
-                Content = new StringContent(string.Empty),
+                Content = new StringContent(string.Empty)
             };
             message.Headers.Add("AccessKey", accesskey);
             using var response = await http.SendAsync(message);
 
             Console.Write($"Response: {await response.Content.ReadAsStringAsync()}");
 
-            if(response.StatusCode == HttpStatusCode.OK) {
+            if(response.StatusCode == HttpStatusCode.OK ||
+                response.StatusCode == HttpStatusCode.NoContent) { //request succeeded but no response given
                 Console.WriteLine("200 OK");
-                Console.WriteLine("CDN purged.");
+                Console.WriteLine("Pull Zone purged.");
             }
 
             else {
-                throw new Exception($"failed to purge url: {response.StatusCode}, {response.ReasonPhrase}");
+                throw new Exception($"failed to purge pullzone: {response.StatusCode}");
             }
         }
     }
-    
 
     private static async Task DeployContentAsync(BunnyCDNStorage context, string storagezone, string contentpath) {
         Console.WriteLine($"Deploying static content. contentpath: {contentpath}");

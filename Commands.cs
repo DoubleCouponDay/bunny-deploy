@@ -9,6 +9,7 @@ public static class CommandNames {
 }
 
 public static class CommandParams {
+    public const string PullZoneId = "--pullzoneid";
     public const string AccessKey = "--accesskey";
     public const string StorageZone = "--storagezone";
     public const string StorageKey = "--storagekey";
