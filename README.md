@@ -42,4 +42,4 @@ Deploy static files to BunnyCDN Storage Zones
 
 ### Resources
 
-
+[API Reference](https://docs.bunny.net/reference/bunnynet-api-overview)
