@@ -38,3 +38,8 @@ Deploy static files to BunnyCDN Storage Zones
     dotnet publish -r win-x64 -c release
 
 - The build will be under the `bin` folder somewhere.
+
+
+### Resources
+
+
