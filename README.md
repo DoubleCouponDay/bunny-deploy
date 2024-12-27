@@ -20,6 +20,8 @@ Deploy static files to BunnyCDN Storage Zones
 
 ### Building for windows
 
+- Install the Windows 11 SDK
+
 - Add a package management config:
 
     dotnet new nugetconfig

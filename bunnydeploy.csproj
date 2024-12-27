@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="BunnyCDN.Net.Storage" Version="1.0.4" />
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.0-*" />
+    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="8.0.0-*" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
